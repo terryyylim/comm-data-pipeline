@@ -17,3 +17,9 @@ gradle-app.setting
 
 # Ignore Gradle build output directory
 build
+
+# Ignore tf compiled files
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.terraform*
