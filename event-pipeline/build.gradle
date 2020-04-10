@@ -1,0 +1,43 @@
+apply plugin: "application"
+apply plugin: "java"
+apply plugin: "idea"
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+mainClassName="com.example.pipeline.events.Main"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: "org.slf4j", name: "slf4j-log4j12", version: "1.7.12"
+    compile group: "org.apache.beam", name: "beam-sdks-java-core", version: "2.19.0"
+    compile group: "org.apache.beam", name: "beam-runners-google-cloud-dataflow-java", version: "2.19.0"
+    compile group: "org.apache.beam", name: "beam-sdks-java-io-google-cloud-platform", version: "2.19.0"
+    compile group: "org.apache.beam", name: "beam-sdks-java-extensions-google-cloud-platform-core", version: "2.19.0"
+    compile group: "org.apache.beam", name: "beam-sdks-java-extensions-sql", version: "2.19.0"
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+run {
+    args = [// Beam Transform args
+            "--project=gcp-enrichment",
+            "--runner=DataflowRunner",
+            "--maxNumWorkers=5",
+            "--numWorkers=1",
+            "--zone=asia-southeast1-a",
+            "--stagingLocation=gs://d-gcp-enrichment-bucket/jars",
+            "--tempLocation=gs://d-gcp-enrichment-bucket/tmp",
+            "--gcpTempLocation=gs://d-gcp-enrichment-bucket/dataflow/tmp",
+
+            // Avro args
+            "--windowDuration=2",
+            "--outputFilePrefix=raw-events",
+            "--outputFileSuffix=.avro",
+            "--avroDirectory=gs://d-gcp-enrichment-bucket/avro/"
+    ]
+}
